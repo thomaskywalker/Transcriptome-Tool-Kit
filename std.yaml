@@ -1,0 +1,179 @@
+#polyps_DESeq2
+data_parameters:
+  EXP_DESIGN_FORMULA: '~group'
+  REF_GROUP:
+    group: "Normal"
+  NORMALIZED_FUNCTION: 'vst'
+  DB_id: "org.Hs.eg.db"
+  origin_seq_id: 'ENSEMBL'
+  GO_id: 'ENTREZID'
+  KEGG_id: 'ENTREZID'
+  MKEGG_id: 'ENTREZID'
+  DO_id: 'ENTREZID'
+  NCG_id: 'ENTREZID'
+  reactomePA_id: 'ENTREZID'
+  GO_ORA_id: 'ENTREZID'
+  PCA_id: 'ENTREZID'
+  heatmap_id: 'ENTREZID'
+  tansform_LFC_id: 'ENTREZID'
+  KEGG_organism: 'hsa' # https://www.genome.jp/kegg/catalog/org_list.html
+  species: "Homo sapiens"
+  category:
+    - 'H'
+    - 'C2'
+path:
+  OUTPUT_PATH: './polyps_results_test_2'
+  COUNT_DATA_PATH: './polyps_results_test_2/data/genes.readcount.mRNA.csv'
+  COLUMN_DATA_PATH: './polyps_results_test_2/data/coldata.txt'
+flow_controller:
+  data_pipe_line:
+    Ctrl: TRUE
+    dds_transformation: TRUE
+    normalized_data_generation: TRUE
+    enrichment_analyses:
+      Ctrl: TRUE
+      ORA:
+        Ctrl: TRUE
+        GO: TRUE
+        KEGG: TRUE
+      Normal:
+        Ctrl: TRUE
+        GO: TRUE
+        KEGG: TRUE
+        MKEGG: TRUE
+        DO: FALSE
+        NCG: FALSE
+        reactomePA: FALSE
+        GSEA: FALSE
+  plots_to_draw:
+    Ctrl: TRUE
+    expression_heatmap: TRUE
+    MA_plot: TRUE
+    volcano_plot: TRUE
+    loading_plot: TRUE
+    pairsplot: TRUE
+    scree_plot: TRUE
+    biplot: TRUE
+    deg_heatmap: TRUE
+    venn_diagram: TRUE
+    sample_cluster: TRUE
+    cor_plot: TRUE
+    dot_plot: TRUE
+    ridge_plot: TRUE
+efficiency_parameters:
+  PARALLEL_CORE_NUM: 1
+  seed: 777
+plot_parameters:
+  expression_heatmap:
+    heatmap_id: 'ENTREZID'
+    HEATMAP_GENE_NUM: 30
+    scale: "row"
+    clustering_method: 'ward.D'
+    main: "Top 30 expressed genes"
+    fontsize: 15
+    fontsize_col: 10
+    show_rownames: TRUE
+    annotation_names_col: FALSE
+    cutree_cols: 5
+    cutree_rows: 5
+    cellwidth: 20
+    cellheight: 20
+  cor_plot:
+    cor_method: 'spearman'
+    main: "Spearman correlation"
+    cellwidth: 25
+    cellheight: 25
+    display_numbers: TRUE
+  venn_diagram:
+    main: "Polypoid DEGs"
+    # Circles
+    lwd: 2
+    lty: "blank"
+    fill: NULL
+    # Numbers
+    cex: 1
+    fontface: "italic"
+    # Set names
+    cat.cex: 1
+    cat.fontface: "bold"
+    cat.default.pos: "outer"
+    filename: 'test.png'
+  deg_heatmap:
+    annotation_names_col: FALSE
+    # other configs
+    scale: "row"
+    main: NULL
+    legend: FALSE
+    fontsize: 15
+    fontsize_col: 10
+    show_rownames: FALSE
+    clustering_method: "ward.D2" # specify clustering method
+    cluster_cols: TRUE
+    cluster_rows: TRUE
+    angle_col: "45"
+  biplot:
+    showLoadings: TRUE
+    lengthLoadingsArrowsFactor: 1.5
+    sizeLoadingsNames: 4
+    colLoadingsNames: "red4"
+    # Other parameters
+    title: "Polyps PCA biplot"
+    titleLabSize: 20
+    colLegendTitle: "Group"
+    # Encircle config
+    encircle: TRUE
+    encircleFill: TRUE
+    hline: 0
+    legendPosition: "bottom"
+    legendLabSize: 16
+    legendIconSize: 8.0
+  scree_plot:
+    colBar: "#2a2ac2b5"
+  pairsplot:
+
+    triangle: FALSE
+    hline: 0
+    vline: 0
+    pointSize: 3
+    gridlines.major: FALSE
+    gridlines.minor: FALSE
+    title: "Pairs plot"
+    titleLabSize: 22
+    axisLabSize: 14
+    plotaxes: TRUE
+  loading_plot:
+    rangeRetain: 0.01
+    labSize: 3
+    title: "Loadings plot"
+    subtitle: "Top 1%* of variables in the statistical range"
+    caption: "Genes: B3GALT5, B3GNT7, REG1A, OLFM4, FN1, CLCA1, NKD1, IGLL5, REG3A, SLCO1B3, MALRD1, RPS4Y1.\n *Top/Bottom 1% genes that are driving the differences along each PC."
+    legendPosition: "bottom"
+    legendLabSize: 16
+    legendIconSize: 8.0
+  volcano_plot:
+    selectLab: NULL
+    pCutoff: 0.000001
+    FCcutoff: 2.0
+    pointSize: 3.0
+    labSize: 6.0
+    labCol: "black"
+    labFace: "bold"
+    boxedLabels: TRUE
+    colAlpha: 0.6
+    legendPosition: "right"
+    legendLabSize: 14
+    legendIconSize: 4.0
+    drawConnectors: TRUE
+    widthConnectors: 1.0
+    colConnectors: "black"
+    title: 'vocano plot'
+  MA_plot:
+    main: 'MA_plot'
+    alpha: 0.6
+  dotplot:
+    showCategory: 10
+  ridgeplot:
+    showCategory: 20
+  sample_cluster:
+    main: 'Euclidean distance'
+    normalized_method: "euclidean"
