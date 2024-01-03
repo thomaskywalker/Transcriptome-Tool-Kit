@@ -10,7 +10,7 @@ data_functional_analyses <- function(meta) {
       return(db)
   }
 
-  Normal_analyses <- function(meta,dds_result, fname,chosen_analyses) {
+  GSEA_analyses <- function(meta,dds_result, fname,chosen_analyses) {
       # prepare geneList object i.e.
       # gene names as index and decreasing foldchange as value
       analyses_results <- list()
@@ -120,7 +120,7 @@ data_functional_analyses <- function(meta) {
       }
       # 8.6 GSEA
       # load molecular signature database
-      if(chosen_analyses$GSEA){
+      if(chosen_analyses$GSEA&((meta$data_parameters$species=='Homo sapiens')|(meta$data_parameters$species=='Mus musculus'))){
         meta$efficiency_parameters$seed %>% set.seed()
       log_debug('start GSEA: {fname}')
         category_num <- length(meta$data_parameters$category)
@@ -130,10 +130,13 @@ data_functional_analyses <- function(meta) {
           molecular_signature_db[[i]] <- msigdata(meta$data_parameters$species,meta$data_parameters$category[[i]], NULL)
           analysis_name <- paste0('GSEA',meta$data_parameters$category[[i]])
           analyses_results[[analysis_name]] <- list(analysis_name = analysis_name,results = clusterProfiler::GSEA(geneList = genelist, TERM2GENE = molecular_signature_db[[i]], eps = 0))
-        }
+          
+          }
       }
       return(analyses_results)
   }
+      
+  
 
   ORA_analyses <- function(meta,dds_result, fname,chosen_analyses){
     symbol <- map_key_to_col(rownames(dds_result),key=meta$data_parameters$origin_seq_id,column= "SYMBOL",db=meta$DB)
@@ -191,7 +194,7 @@ data_functional_analyses <- function(meta) {
         log_debug("{meta$group_list[idx]}")
         dun <- list()
       if(chosen_analyses$Normal$Ctrl){
-        dun <- c(dun,Normal_analyses(meta,resLFC_all[[idx]], meta$group_list[idx],chosen_analyses=chosen_analyses$Normal))
+        dun <- c(dun,GSEA_analyses(meta,resLFC_all[[idx]], meta$group_list[idx],chosen_analyses=chosen_analyses$Normal))
       }
       if(chosen_analyses$ORA$Ctrl){
         dun <- c(dun,ORA_analyses(meta,resLFC_all[[idx]], meta$group_list[idx],chosen_analyses=chosen_analyses$ORA))

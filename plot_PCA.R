@@ -4,8 +4,11 @@ plot_PCA <- function(meta) {
   normalized_data <- meta$import_data(paste0("dds_",meta$data_parameters$NORMALIZED_FUNCTION,".rds"))
   coldata<- meta$import_data('col_data.txt')
   rownames(normalized_data) <- rownames(normalized_data) %>%map_key_to_col(.,key=meta$data_parameters$origin_seq_id,column= meta$data_parameters$PCA_id,db=meta$DB)
+  
   ## removing the lower 10% of variables based on variance
   p <- PCAtools::pca(normalized_data, metadata = coldata, removeVar = 0.1)
+  
+  
   # 6.1 PCA biplot
   pipeline_controller(list(meta, p),
                       meta$flow_controller$plots_to_draw$biplot,

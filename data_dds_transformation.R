@@ -1,9 +1,9 @@
 data_dds_transformation <- function(meta) {
   # import data
-  cts <- read.table(meta$path$COUNT_DATA_PATH, sep = ",", header = TRUE, row.names = 1) # cts (raw count)
+  cts <- meta$import_data(meta$path$COUNT_DATA_PATH, sep = ",", header = TRUE, row.names = 1)  # cts (raw count)
   log_debug('Count data read from  :{meta$path$COUNT_DATA_PATH} .Dimensions are nCol:{ncol(cts)},nRow:{nrow(cts)}.')
 
-  coldata <- read.table(meta$path$COLUMN_DATA_PATH) #coldata (metadata)
+  coldata <- meta$import_data(meta$path$COLUMN_DATA_PATH) #coldata (metadata)
   log_debug('Column data read from  :{meta$path$COLUMN_DATA_PATH} .Dimensions are nCol:{ncol(coldata)}, nRow:{nrow(coldata)}.')
 
   # reorder cts's columns based on row order of metadata (coldata)

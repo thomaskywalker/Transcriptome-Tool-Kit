@@ -4,6 +4,8 @@ data_parameters:
   REF_GROUP:
     group: "Normal"
   NORMALIZED_FUNCTION: 'vst'
+  pvalueThreshold: 0.05
+  lfcThreshold: 1
   DB_id: "org.Hs.eg.db"
   origin_seq_id: 'ENSEMBL'
   GO_id: 'ENTREZID'
@@ -15,7 +17,7 @@ data_parameters:
   GO_ORA_id: 'ENTREZID'
   PCA_id: 'ENTREZID'
   heatmap_id: 'ENTREZID'
-  tansform_LFC_id: 'ENTREZID'
+  transform_LFC_id: 'ENTREZID'
   KEGG_organism: 'hsa' # https://www.genome.jp/kegg/catalog/org_list.html
   species: "Homo sapiens"
   category:
@@ -23,7 +25,7 @@ data_parameters:
     - 'C2'
 path:
   OUTPUT_PATH: './polyps_results_test_2'
-  COUNT_DATA_PATH: './polyps_results_test_2/data/genes.readcount.mRNA.csv'
+  COUNT_DATA_PATH: 'genes.readcount.mRNA.csv'
   COLUMN_DATA_PATH: './polyps_results_test_2/data/coldata.txt'
 flow_controller:
   data_pipe_line:

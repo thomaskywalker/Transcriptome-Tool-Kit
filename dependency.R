@@ -105,6 +105,13 @@ flow_control <- function(meta){
                         timer(plot_steps))
 }
 
+data_transform_steps <- function(meta, plot_heatmap, plot_pvalue_LFC, plot_PCA, plot_venn_heatmap, plot_functional_analysis) {
+  parameters <- meta$flow_controller$data_pipe_line
+  meta <- list(meta)
+  pipeline_controller(meta,parameters$dds_transformation,timer(data_dds_transformation))
+  pipeline_controller(meta,parameters$normalized_data_generation,timer(data_normalized))
+  pipeline_controller(meta,parameters$enrichment_analyses$Ctrl,timer(data_functional_analyses))
+}
 plot_steps <- function(meta, plot_heatmap, plot_pvalue_LFC, plot_PCA, plot_venn_heatmap, plot_functional_analysis) {
   parameters <- meta$flow_controller$plots_to_draw
   meta <- list(meta)
@@ -115,13 +122,6 @@ plot_steps <- function(meta, plot_heatmap, plot_pvalue_LFC, plot_PCA, plot_venn_
   pipeline_controller(meta,c(parameters$ridge_plot,parameters$dot_plot),timer(plot_functional_analysis))
 }
 
-data_transform_steps <- function(meta, plot_heatmap, plot_pvalue_LFC, plot_PCA, plot_venn_heatmap, plot_functional_analysis) {
-  parameters <- meta$flow_controller$data_pipe_line
-  meta <- list(meta)
-  pipeline_controller(meta,parameters$dds_transformation,timer(data_dds_transformation))
-  pipeline_controller(meta,parameters$normalized_data_generation,timer(data_normalized))
-  pipeline_controller(meta,parameters$enrichment_analyses$Ctrl,timer(data_functional_analyses))
-}
 
 pipeline_controller <- function(FUN_input, decision_paras, FUN, fun_name = deparse(substitute(FUN))) {
   if (any(decision_paras)) {

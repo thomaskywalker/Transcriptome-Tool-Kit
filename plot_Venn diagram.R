@@ -1,21 +1,23 @@
 plot_venn_heatmap <- function(meta) {
-  # 5 Venn disgram and heatmao of intersections
   # import datasets
   REF_GROUP <- meta$data_parameters$REF_GROUP[[meta$data_parameters$REF_GROUP %>% attributes() %>% unlist()]]
   data_normalized <- meta$import_data(paste0("dds_",meta$data_parameters$NORMALIZED_FUNCTION,".rds"))
   coldata <- meta$import_data('col_data.txt')
   resLFC <- meta$import_data('resLFC_all.rds')
 
-  # 5.1 Venn Diagram
-  log_info('filter the DEGs with |log2FC| > 1 and padj < 0.05')
-  pval_threshold <- 0.05
-  lfc_threshold <- 1
+  log_info('filter the DEGs with |log2FC| > {meta$data_parameters$lfcThreshold} and padj < {meta$data_parameters$pvalueThreshold}')
+  pval_threshold <- meta$data_parameters$pvalueThreshold
+  lfc_threshold <- meta$data_parameters$lfcThreshold
   groups_num <- length(resLFC)
   group_gene_id_set <- vector('list',groups_num)
   for(idx in seq_along(resLFC)){
-    group_gene_id_set[[idx]] <- row.names(resLFC[[idx]][which(resLFC[[idx]]$padj < pval_threshold, resLFC[[idx]]$log2FoldChange >= lfc_threshold), ])
+    #group_gene_id_set[[idx]] <- row.names(resLFC[[idx]][which(resLFC[[idx]]$padj < pval_threshold, resLFC[[idx]]$log2FoldChange >= lfc_threshold), ])
+    # since have add test to validate lfc>thresholds in null hypothesis, do not need to cut-off lfc as hard thresholds. 
+    group_gene_id_set[[idx]] <- row.names(resLFC[[idx]][which(resLFC[[idx]]$padj < pval_threshold), ])
   }
+  
   DEG_intersection <- Reduce(intersect, group_gene_id_set)
+  
   DEG_unique <-  vector('list',groups_num)
   for (idx in seq_along(resLFC)) {
     unique_idx <- !group_gene_id_set[[idx]] %in% (group_gene_id_set[-idx] %>% unlist())
@@ -39,6 +41,9 @@ plot_venn_heatmap <- function(meta) {
   # pipeline_controller(list(meta=meta,data_normalized=data_normalized,genelist=DEG_unique ,coldata=coldata,file_name="unique"),
   #                      meta$flow_controller$plots_to_draw$deg_heatmap,
   #                      deg_heat)
+  
+  ggggggggg <<- group_gene_id_set 
+  hhhhhhhhh <<- Reduce(cbind,group_gene_id_set) 
   return(NULL)
 }
 

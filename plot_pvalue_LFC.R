@@ -15,7 +15,7 @@ plot_pvalue_LFC <- function(meta) {
 
 tranform_LFC_id <- function(meta, groups_list,resLFC_all) {
   for (idx in seq_along(groups_list)) {
-    rownames(resLFC_all[[idx]]) <- map_key_to_col(rownames(resLFC_all[[idx]]),key=meta$data_parameters$origin_seq_id,column= meta$data_parameters$tranform_LFC_id,meta$DB)
+    rownames(resLFC_all[[idx]]) <- map_key_to_col(rownames(resLFC_all[[idx]]),key=meta$data_parameters$origin_seq_id,column= meta$data_parameters$transform_LFC_id,meta$DB)
   }
   return(resLFC_all)
 }

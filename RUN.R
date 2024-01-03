@@ -6,15 +6,16 @@ start_analyse <- function(project_name){
   meta <- meta_data_factory(config,std)
   flow_control(meta)
 }
+
 # set working directory to location of RUN.R
 # setwd('R')
 # input project name
 # start_analyse(project_name = 'setA')
 # start_analyse(project_name = 'setB')
 # start_analyse(project_name = 'setall')
-project_name = 'setall_AF'
+# project_name = 'setall_AF'
 # start_analyse(project_name = 'setall_AF')
-start_analyse(project_name = 'polyps_results_test_2')
 
+start_analyse(project_name = '../gene_seq_analyses - 複製/setC')
 
 

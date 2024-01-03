@@ -18,6 +18,8 @@ start_analyse(project_name = 'job2')
 
 
 # Future develop route
+- add function to analyse interaction term
+- add upset plot to replace venn diagram for contrasts which more than five groups.    
 - targets package integrate 
 - a GUI interface (shiny app?)
 - more plots for enrichment analyses
@@ -30,3 +32,14 @@ start_analyse(project_name = 'job2')
 - complie function to speedup function 
 - pararellized function 
 - integrate fastp
+
+# constraint
+- only accept transcriptome count data
+- can only accept 1 treatment and no other effect
+- the category of treatment under 5 for vennplot
+- need to fix one treatment for control group
+
+# sessionInfo
+R version 4.3.1 (2023-06-16 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 11 x64 (build 22621)
