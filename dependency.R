@@ -1,12 +1,13 @@
-# # load libraries
+# the script load all of function and libraries we need.
+# load libraries ----
 library(renv)
 library(logger)
 log_layout(layout_glue_colors)
 log_info('Start loading Packages')
-library(tidyverse) # basicly includes everything needed for data analyses
-library(magrittr) # pipe
+library(tidyverse)
+library(magrittr)
 library(AnnotationHub)
-library(AnnotationDbi) # mapID
+library(AnnotationDbi)
 library(clusterProfiler) # GO, KEGG and GSEA analyses
 library(msigdbr) # gene set database for GSEA
 library(DOSE) # DO, NCG analyses
@@ -24,23 +25,21 @@ library(PCAtools)
 library(glue)
 library(assertthat)
 library(BiocParallel)
-library(tidyverse)
-library(dplyr)
-library(clusterProfiler)
-library(AnnotationDbi)
 library(enrichplot)
 library(pathview)
 library(fgsea)
-library(ggplot2)
 library(ggridges)
 library(yaml)
 library(foreach)
 library(doParallel)
 
+
+# load function in other R scripts ----
 Rfile_pre <- list.files(pattern='\\.R$')
 Rfile <- Rfile_pre[-match(c('RUN.R','dependency.R'),table=Rfile_pre)]
 lapply(Rfile,source)
 
+# load function ----
 map_key_to_col <- function(gene_list,key='ENSEMBL',column= "SYMBOL",db) {
   log_debug('Map the {key} gene id to {column} for visualisation')
   col <- gene_list %>%
@@ -105,13 +104,6 @@ flow_control <- function(meta){
                         timer(plot_steps))
 }
 
-data_transform_steps <- function(meta, plot_heatmap, plot_pvalue_LFC, plot_PCA, plot_venn_heatmap, plot_functional_analysis) {
-  parameters <- meta$flow_controller$data_pipe_line
-  meta <- list(meta)
-  pipeline_controller(meta,parameters$dds_transformation,timer(data_dds_transformation))
-  pipeline_controller(meta,parameters$normalized_data_generation,timer(data_normalized))
-  pipeline_controller(meta,parameters$enrichment_analyses$Ctrl,timer(data_functional_analyses))
-}
 plot_steps <- function(meta, plot_heatmap, plot_pvalue_LFC, plot_PCA, plot_venn_heatmap, plot_functional_analysis) {
   parameters <- meta$flow_controller$plots_to_draw
   meta <- list(meta)
@@ -122,6 +114,13 @@ plot_steps <- function(meta, plot_heatmap, plot_pvalue_LFC, plot_PCA, plot_venn_
   pipeline_controller(meta,c(parameters$ridge_plot,parameters$dot_plot),timer(plot_functional_analysis))
 }
 
+data_transform_steps <- function(meta, plot_heatmap, plot_pvalue_LFC, plot_PCA, plot_venn_heatmap, plot_functional_analysis) {
+  parameters <- meta$flow_controller$data_pipe_line
+  meta <- list(meta)
+  pipeline_controller(meta,parameters$dds_transformation,timer(data_dds_transformation))
+  pipeline_controller(meta,parameters$normalized_data_generation,timer(data_normalized))
+  pipeline_controller(meta,parameters$enrichment_analyses$Ctrl,timer(data_functional_analyses))
+}
 
 pipeline_controller <- function(FUN_input, decision_paras, FUN, fun_name = deparse(substitute(FUN))) {
   if (any(decision_paras)) {
@@ -150,3 +149,29 @@ timer <- function(FUN, fun_name = deparse(substitute(FUN)), level = 0) {
   return(fun)
 }
 
+rds_to_csv <- function(meta){
+  normalized_rds_to_csv <- function(meta){
+    deseq2_dds <- meta$import_data('dds_vst.rds')
+    write.csv(deseq2_dds,meta$get_file_path('data','dds_vst.csv'))
+  }
+ 
+
+  resLFC_rds_to_csv <- function(meta){
+    resLFC_all <- meta$import_data('resLFC_all.rds')
+    write.csv(resLFC_all,meta$get_file_path('data','resLFC_all.csv'))
+    resLFC_all <- read.csv(meta$get_file_path('data','resLFC_all.csv'))
+  }
+
+  functional_all_rds_to_csv <- function(meta){
+  functional_all <- meta$import_data('functional_all.rds')
+  for (i in seq_along(functional_all)) {
+    for (j in seq_along(functional_all[[i]])) {
+      dat <- functional_all[[i]][[j]]
+      write.csv(dat$results,meta$get_file_path('data',paste0('functional_',meta$group_list[i],'_',dat$analysis_name,'.csv')))
+    }
+  }
+  }
+  normalized_rds_to_csv(meta)
+  resLFC_rds_to_csv(meta)
+  functional_all_rds_to_csv(meta)
+}

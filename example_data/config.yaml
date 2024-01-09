@@ -2,29 +2,29 @@
 data_parameters:
   EXP_DESIGN_FORMULA: '~group' # ~ treatment name in column data
   REF_GROUP:
-    group: "Normal" # Contol group in treatment
+    group: "AF" # Contol group in treatment
   NORMALIZED_FUNCTION: 'vst' # can use rln instead
   pvalueThreshold: 0.05 # p-value thresholds
   lfcThreshold: 1 # log foldchange thresholds
-  DB_id: "org.Hs.eg.db" # use Orgdb object.For model organism: https://bioconductor.org/packages/release/BiocViews.html#___OrgDb
-  origin_seq_id: 'ENSEMBL' #For model organism ENSEMBL is recommanded ,Other use SYMBOL instead.
-  GO_id: 'SYMBOL'   # if error, (--> Expected input gene ID: XXXXXX) change these ID.SYMBOL is second recommanded. use keytypes(org.Hs.eg.db) to see other id can be use in database.
-  KEGG_id: 'SYMBOL' 
+  DB_id: "Cordyceps_militaris_CM01.OrgDb" # use Orgdb object.For model organism: https://bioconductor.org/packages/release/BiocViews.html#___OrgDb
+  origin_seq_id: 'SYMBOL' #For model organism ENSEMBL is recommanded ,Other use SYMBOL instead.
+  GO_id: 'ENTREZID'   # if error, (--> Expected input gene ID: XXXXXX) change these ID.SYMBOL is second recommanded. use keytypes(org.Hs.eg.db) to see other id can be use in database.
+  KEGG_id: 'SYMBOL'
   MKEGG_id: 'SYMBOL'
-  DO_id: 'ENTREZID' 
-  NCG_id: 'ENTREZID' 
-  reactomePA_id: 'ENTREZID' 
-  GO_ORA_id: 'ENTREZID' 
+  DO_id: 'ENTREZID'
+  NCG_id: 'ENTREZID'
+  reactomePA_id: 'ENTREZID'
+  GO_ORA_id: 'ENTREZID'
   PCA_id: 'SYMBOL' # for visualization, SYMBOL is recommanded
   heatmap_id: 'SYMBOL' # for visualization, SYMBOL is recommanded
   transform_LFC_id: 'SYMBOL' # for visualization, SYMBOL is recommanded
-  KEGG_organism: 'hsa' # search your organism id here  https://www.genome.jp/kegg/catalog/org_list.html
-  species: "Homo sapiens" # use for molcular signature database 
-  category:   
+  KEGG_organism: 'cmt' # search your organism id here  https://www.genome.jp/kegg/catalog/org_list.html
+  species: "Homo sapiens" # use for molcular signature database
+  category:
     - 'H'
     - 'C2'
 path:
-  COUNT_DATA: 'genes.readcount.mRNA.csv' # actually is file name.
+  COUNT_DATA: 'count_data.csv' # actually is file name.
   COLUMN_DATA: 'col_data.txt' # actually is file name.
 flow_controller:
   data_pipe_line:
@@ -32,24 +32,24 @@ flow_controller:
     dds_transformation: TRUE
     normalized_data_generation: TRUE
     enrichment_analyses:
-      Ctrl: TRUE # choose the database to map gene to feature. 
+      Ctrl: TRUE # choose the database to map gene to feature.
       ORA:
         Ctrl: TRUE
         GO_CC: TRUE
-        GO_MF: TRUE
-        GO_BP: TRUE
+        GO_MF: FALSE
+        GO_BP: FALSE
         KEGG: TRUE
       GSEA:
         Ctrl: TRUE
         GO_MF: TRUE
-        GO_CC: TRUE
-        GO_BP: TRUE
+        GO_CC: FALSE
+        GO_BP: FALSE
         KEGG: TRUE
         MKEGG: TRUE
         DO: FALSE
         NCG: FALSE
         reactomePA: FALSE
-        msigDB: FALSE 
+        msigDB: FALSE # actually is molcular signature database .
   plots_to_draw:
     Ctrl: TRUE
     expression_heatmap: TRUE

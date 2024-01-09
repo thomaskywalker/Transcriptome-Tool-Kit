@@ -1,21 +1,17 @@
 start_analyse <- function(project_name){
+  t1 <- Sys.time()
   source('dependency.R')
-  log_threshold('DEBUG')
+  # log_threshold('DEBUG')
+  log_threshold('INFO')
   config <- yaml::read_yaml(file.path(project_name,"config.yaml"))
   std <- yaml::read_yaml('std.yaml')
-  meta <- meta_data_factory(config,std)
+  meta <- meta_data_factory(config,std,project_name)
   flow_control(meta)
+  rds_to_csv(meta)
+  t2 <- Sys.time()
+  print(t2-t1)
 }
 
-# set working directory to location of RUN.R
-# setwd('R')
-# input project name
-# start_analyse(project_name = 'setA')
-# start_analyse(project_name = 'setB')
-# start_analyse(project_name = 'setall')
-# project_name = 'setall_AF'
-# start_analyse(project_name = 'setall_AF')
-
-start_analyse(project_name = '../gene_seq_analyses - 複製/setC')
 
 
+start_analyse(project_name = 'example_data')

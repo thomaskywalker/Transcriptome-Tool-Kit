@@ -11,9 +11,9 @@ plot_venn_heatmap <- function(meta) {
   groups_num <- length(resLFC)
   group_gene_id_set <- vector('list',groups_num)
   for(idx in seq_along(resLFC)){
-    #group_gene_id_set[[idx]] <- row.names(resLFC[[idx]][which(resLFC[[idx]]$padj < pval_threshold, resLFC[[idx]]$log2FoldChange >= lfc_threshold), ])
+    group_gene_id_set[[idx]] <- row.names(resLFC[[idx]][which(resLFC[[idx]]$padj < pval_threshold, resLFC[[idx]]$log2FoldChange >= lfc_threshold), ])
     # since have add test to validate lfc>thresholds in null hypothesis, do not need to cut-off lfc as hard thresholds. 
-    group_gene_id_set[[idx]] <- row.names(resLFC[[idx]][which(resLFC[[idx]]$padj < pval_threshold), ])
+    # group_gene_id_set[[idx]] <- row.names(resLFC[[idx]][which(resLFC[[idx]]$padj < pval_threshold), ])
   }
   
   DEG_intersection <- Reduce(intersect, group_gene_id_set)

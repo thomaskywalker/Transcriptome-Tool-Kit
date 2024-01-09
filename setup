@@ -1,0 +1,38 @@
+# 0.0 Install all packages needed
+# Takes about 10 minutes
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+
+BiocManager::install("pasilla")
+BiocManager::install("DESeq2")
+BiocManager::install("apeglm")
+BiocManager::install("DEGreport")
+BiocManager::install("EnhancedVolcano")
+BiocManager::install("AnnotationDbi")
+BiocManager::install("AnnotationHub")
+BiocManager::install("ClusterProfiler")
+BiocManager::install("DOSE")
+BiocManager::install("ReactomePA")
+BiocManager::install("enrichplot")
+BiocManager::install("pathview")
+BiocManager::install("org.Hs.eg.db")
+BiocManager::install("fgsea")
+BiocManager::install("pasilla")
+BiocManager::install("DESeq2")
+BiocManager::install("apeglm")
+BiocManager::install("PCAtools")
+install.packages("pheatmap")
+install.packages("tidyverse")
+install.packages("magrittr") # pipe
+install.packages("tidyverse")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("ggridges")
+install.packages("tidyverse")
+install.packages("magrittr")
+install.packages("pasilla")
+install.packages("ggalt")
+install.packages("RColorBrewer")
+install.packages("pheatmap")
+install.packages("EnhancedVolcano")

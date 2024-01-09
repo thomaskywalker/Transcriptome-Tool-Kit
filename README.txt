@@ -35,9 +35,10 @@ start_analyse(project_name = 'job2')
 
 # constraint
 - only accept transcriptome count data
-- can only accept 1 treatment and no other effect
-- the category of treatment under 5 for vennplot
+- can only accept 1 factor and no other effect at a time.
 - need to fix one treatment for control group
+- need Biological Replicates
+- the category of treatments under 5 for vennplot
 
 # sessionInfo
 R version 4.3.1 (2023-06-16 ucrt)

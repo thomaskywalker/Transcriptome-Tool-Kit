@@ -1,10 +1,10 @@
 data_dds_transformation <- function(meta) {
   # import data
-  cts <- meta$import_data(meta$path$COUNT_DATA_PATH, sep = ",", header = TRUE, row.names = 1)  # cts (raw count)
-  log_debug('Count data read from  :{meta$path$COUNT_DATA_PATH} .Dimensions are nCol:{ncol(cts)},nRow:{nrow(cts)}.')
+  cts <- meta$import_data(meta$path$COUNT_DATA, sep = ",", header = TRUE, row.names = 1)  # cts (raw count)
+  log_debug('Count data read from  :{meta$path$COUNT_DATA} .Dimensions are nCol:{ncol(cts)},nRow:{nrow(cts)}.')
 
-  coldata <- meta$import_data(meta$path$COLUMN_DATA_PATH) #coldata (metadata)
-  log_debug('Column data read from  :{meta$path$COLUMN_DATA_PATH} .Dimensions are nCol:{ncol(coldata)}, nRow:{nrow(coldata)}.')
+  coldata <- meta$import_data(meta$path$COLUMN_DATA) #coldata (metadata)
+  log_debug('Column data read from  :{meta$path$COLUMN_DATA} .Dimensions are nCol:{ncol(coldata)}, nRow:{nrow(coldata)}.')
 
   # reorder cts's columns based on row order of metadata (coldata)
   if (!(all(rownames(coldata) == colnames(cts)))){
@@ -16,7 +16,7 @@ data_dds_transformation <- function(meta) {
       colData = coldata,
       design = meta$data_parameters$EXP_DESIGN_FORMULA
   )
-  log_info('Secessfully created DESeq Data by countData:{meta$path$COUNT_DATA_PATH},column data:{meta$path$COLUMN_DATA_PATH} ,design:{meta$data_parameters$EXP_DESIGN_FORMULA }.')
+  log_info('Secessfully created DESeq Data by countData:{meta$path$COUNT_DATA},column data:{meta$path$COLUMN_DATA} ,design:{meta$data_parameters$EXP_DESIGN_FORMULA }.')
 
 
   # 1.1 Pre-filtering

@@ -1,4 +1,4 @@
-meta_data_factory <- function(config,std)
+meta_data_factory <- function(config,std,project_name)
 {
   read_data <- function(file_path,...){
     identify_file_type <- function(file_path) {
@@ -35,7 +35,7 @@ meta_data_factory <- function(config,std)
     return(file.path(config$path$OUTPUT_PATH,type,file_name))
   }
   get_group_list <- function(){
-    return(import_data(config$path$COLUMN_DATA_PATH)$group %>% factor(.) %>% relevel(. ,ref=config$data_parameters$REF_GROUP[[names(config$data_parameters$REF_GROUP)]]) %>% levels(.) %>% .[-1])
+    return(import_data(config$path$COLUMN_DATA)$group %>% factor(.) %>% relevel(. ,ref=config$data_parameters$REF_GROUP[[names(config$data_parameters$REF_GROUP)]]) %>% levels(.) %>% .[-1])
   }
   import_data <- function(data_name,...){
     data <- read_data(get_file_path('data',data_name),...)
@@ -46,7 +46,7 @@ meta_data_factory <- function(config,std)
     formula <- config$data_parameters$EXP_DESIGN_FORMULA
     factors <- config$data_parameters$REF_GROUP %>% attributes(.) %>% .[['names']]
 
-    data <- import_data(config$path$COLUMN_DATA_PATH)
+    data <- import_data(config$path$COLUMN_DATA)
     for ( name in factors){
     data[[name]]  <- data[[name]]  %>% as.factor() %>% relevel(.,ref=config$data_parameters$REF_GROUP[[name]])
     }
@@ -77,14 +77,14 @@ meta_data_factory <- function(config,std)
     }
   return(retrieve_AnnotationHub(db_name))
 }
-
   stopifnot('Fisrt class attributes were not set' = (names(config) == names(std)))
   stopifnot('data_parameters were missed. (compare to std.yaml)'=names(config$data_parameters) == names(std$data_parameters))
   stopifnot('path were missed. (compare to std.yaml)'=names(config$path) == names(std$path))
+  config$path$OUTPUT_PATH <- project_name
   stopifnot('OUTPUT_PATH do not exsits' = file.exists(config$path$OUTPUT_PATH))
-  stopifnot('COUNT_DATA_PATH do not exsits' = file.exists(get_file_path('data',config$path$COUNT_DATA_PATH) ))
-  stopifnot('COLUMN_DATA_PATH do not exsits' = file.exists(get_file_path('data',config$path$COLUMN_DATA_PATH) ))
-  stopifnot('Column data file gene id do not contain all sample id in count data'= all(rownames(import_data(config$path$COLUMN_DATA_PATH)) %in% colnames(import_data(config$path$COUNT_DATA_PATH)) ))
+  stopifnot('COUNT_DATA do not exsits' = file.exists(get_file_path('data',config$path$COUNT_DATA) ))
+  stopifnot('COLUMN_DATA do not exsits' = file.exists(get_file_path('data',config$path$COLUMN_DATA) ))
+  stopifnot('Column data file gene id do not contain all sample id in count data'= all(rownames(import_data(config$path$COLUMN_DATA)) %in% colnames(import_data(config$path$COUNT_DATA)) ))
   config$DB <- load_orgdb(config$data_parameters$DB_id)
   config$get_file_path <- get_file_path
   config$read_data <- read_data
@@ -93,8 +93,8 @@ meta_data_factory <- function(config,std)
   config$group_list <- get_group_list()
   config$data_parameters$combinations <- calc_combinations()
   config$data_parameters$combinations_num <-  length(config$data_parameters$combinations)
-  file.copy(config$get_file_path('data',config$path$COUNT_DATA_PATH),config$get_file_path('data','count_data.csv'),overwrite=FALSE,copy.date = TRUE)
-  file.copy(config$get_file_path('data',config$path$COLUMN_DATA_PATH),config$get_file_path('data','col_data.txt'),overwrite=FALSE,copy.date = TRUE)
+  file.copy(config$get_file_path('data',config$path$COUNT_DATA),config$get_file_path('data','count_data.csv'),overwrite=FALSE,copy.date = TRUE)
+  file.copy(config$get_file_path('data',config$path$COLUMN_DATA),config$get_file_path('data','col_data.txt'),overwrite=FALSE,copy.date = TRUE)
   return(config)
   }
 

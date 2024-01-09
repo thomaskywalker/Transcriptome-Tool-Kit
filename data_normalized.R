@@ -13,7 +13,8 @@ data_normalized <- function(meta) {
   for (idx in 1:groups_num) {
     contra <- groups_list[[idx]]
     log_info('Preparing data of {contra},Shrink Log Fold Change by apeglm')
-    resLFC <- lfcShrink(dds, coef = contra, type = 'apeglm',lfcThreshold = meta$data_parameters$lfcThreshold,svalue=TRUE)# you can try "normal" or "ashr" instead
+    # resLFC <- lfcShrink(dds, coef = contra, type = 'apeglm',lfcThreshold = meta$data_parameters$lfcThreshold,svalue=TRUE)# you can try "normal" or "ashr" instead
+    resLFC <- lfcShrink(dds, coef = contra, type = 'apeglm')# you can try "normal" or "ashr" instead
     resOrdered <- resLFC[order(resLFC$padj),]
     resLFC_all[[idx]] <- resOrdered
   }

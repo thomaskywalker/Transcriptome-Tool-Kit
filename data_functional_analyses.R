@@ -16,16 +16,16 @@ data_functional_analyses <- function(meta) {
       analyses_results <- list()
       # 8.1 Gene Ontology
       # perform gseGO with minimum size of 10 and maximum size of 300
-      if(chosen_analyses$GO){
+      if(chosen_analyses$GO_CC){
       meta$efficiency_parameters$seed %>% set.seed()
-      log_debug('start GO: {fname}')
+      log_debug('start GO_CC: {fname}')
       names(dds_result$log2FoldChange) <- map_key_to_col(rownames(dds_result),key=meta$data_parameters$origin_seq_id,column= meta$data_parameters$GO_id,db = meta$DB)
       genelist <- sort(dds_result$log2FoldChange, decreasing = TRUE)
       gores <- clusterProfiler::gseGO(
           geneList = genelist,
           OrgDb = meta$DB,
           eps = 0,
-          ont = "ALL",
+          ont = "CC",
           minGSSize = 50,
           maxGSSize = 500,
           pvalueCutoff = 1,
@@ -33,7 +33,45 @@ data_functional_analyses <- function(meta) {
           verbose = FALSE
       )
       gores <- DOSE::setReadable(gores, OrgDb = meta$DB, keyType = meta$data_parameters$GO_id)
-      analyses_results[['GO']] <- list(analysis_name = 'GO',results = gores)
+      analyses_results[['GO_CC']] <- list(analysis_name = 'GO_CC',results = gores)
+      }
+      if(chosen_analyses$GO_MF){
+      meta$efficiency_parameters$seed %>% set.seed()
+      log_debug('start GO_MF: {fname}')
+      names(dds_result$log2FoldChange) <- map_key_to_col(rownames(dds_result),key=meta$data_parameters$origin_seq_id,column= meta$data_parameters$GO_id,db = meta$DB)
+      genelist <- sort(dds_result$log2FoldChange, decreasing = TRUE)
+      gores <- clusterProfiler::gseGO(
+          geneList = genelist,
+          OrgDb = meta$DB,
+          eps = 0,
+          ont = "MF",
+          minGSSize = 50,
+          maxGSSize = 500,
+          pvalueCutoff = 1,
+          nPermSimple = 10000,
+          verbose = FALSE
+      )
+      gores <- DOSE::setReadable(gores, OrgDb = meta$DB, keyType = meta$data_parameters$GO_id)
+      analyses_results[['GO_MF']] <- list(analysis_name = 'GO_MF',results = gores)
+      }
+      if(chosen_analyses$GO_BP){
+      meta$efficiency_parameters$seed %>% set.seed()
+      log_debug('start GO_BP: {fname}')
+      names(dds_result$log2FoldChange) <- map_key_to_col(rownames(dds_result),key=meta$data_parameters$origin_seq_id,column= meta$data_parameters$GO_id,db = meta$DB)
+      genelist <- sort(dds_result$log2FoldChange, decreasing = TRUE)
+      gores <- clusterProfiler::gseGO(
+          geneList = genelist,
+          OrgDb = meta$DB,
+          eps = 0,
+          ont = "BP",
+          minGSSize = 50,
+          maxGSSize = 500,
+          pvalueCutoff = 1,
+          nPermSimple = 10000,
+          verbose = FALSE
+      )
+      gores <- DOSE::setReadable(gores, OrgDb = meta$DB, keyType = meta$data_parameters$GO_id)
+      analyses_results[['GO_BP']] <- list(analysis_name = 'GO_BP',results = gores)
       }
 
       # 8.2 KEGG
@@ -120,15 +158,15 @@ data_functional_analyses <- function(meta) {
       }
       # 8.6 GSEA
       # load molecular signature database
-      if(chosen_analyses$GSEA&((meta$data_parameters$species=='Homo sapiens')|(meta$data_parameters$species=='Mus musculus'))){
+      if(chosen_analyses$msigDB&((meta$data_parameters$species=='Homo sapiens')|(meta$data_parameters$species=='Mus musculus'))){
         meta$efficiency_parameters$seed %>% set.seed()
-      log_debug('start GSEA: {fname}')
+      log_debug('start msigDB: {fname}')
         category_num <- length(meta$data_parameters$category)
         gsea <- vector('list',category_num)
         molecular_signature_db <- vector('list',category_num)
         for (i in 1:category_num) {
           molecular_signature_db[[i]] <- msigdata(meta$data_parameters$species,meta$data_parameters$category[[i]], NULL)
-          analysis_name <- paste0('GSEA',meta$data_parameters$category[[i]])
+          analysis_name <- paste0('msigDB',meta$data_parameters$category[[i]])
           analyses_results[[analysis_name]] <- list(analysis_name = analysis_name,results = clusterProfiler::GSEA(geneList = genelist, TERM2GENE = molecular_signature_db[[i]], eps = 0))
           
           }
@@ -146,14 +184,14 @@ data_functional_analyses <- function(meta) {
     ORA_id_entrezid <- dds_result %>% subset(padj < 0.01, abs(log2FoldChange) >= 1) %>% rownames() %>% map_key_to_col(.,key=meta$data_parameters$origin_seq_id,column= "ENTREZID",db=meta$DB)
       names(dds_result$log2FoldChange) <- entrezid
       genelist <- sort(dds_result$log2FoldChange, decreasing = TRUE)
-    if(chosen_analyses$GO){
+    if(chosen_analyses$GO_CC){
       meta$efficiency_parameters$seed %>% set.seed()
-      log_debug('start GO-ORA: {fname}')
+      log_debug('start GO_CC-ORA: {fname}')
       gores <- clusterProfiler::enrichGO(
         gene = ORA_id_entrezid,
         universe = entrezid,
         OrgDb = meta$DB,
-        ont = "ALL",
+        ont = "CC",
         minGSSize = 50,
         maxGSSize = 500,
         pvalueCutoff = 1,
@@ -163,7 +201,45 @@ data_functional_analyses <- function(meta) {
         readable = TRUE
       )
       gores <- DOSE::setReadable(gores, meta$DB, keyType =meta$data_parameters$GO_ORA_id)
-      analyses_results[['GO_ORA']] <- list(analysis_name = 'GO_ORA',results = gores)
+      analyses_results[['GO_CC_ORA']] <- list(analysis_name = 'GO_CC_ORA',results = gores)
+    }
+    if(chosen_analyses$GO_MF){
+      meta$efficiency_parameters$seed %>% set.seed()
+      log_debug('start GO_MF-ORA: {fname}')
+      gores <- clusterProfiler::enrichGO(
+        gene = ORA_id_entrezid,
+        universe = entrezid,
+        OrgDb = meta$DB,
+        ont = "MF",
+        minGSSize = 50,
+        maxGSSize = 500,
+        pvalueCutoff = 1,
+        qvalueCutoff = 1,
+        pAdjustMethod = "BH",
+
+        readable = TRUE
+      )
+      gores <- DOSE::setReadable(gores, meta$DB, keyType =meta$data_parameters$GO_ORA_id)
+      analyses_results[['GO_MF_ORA']] <- list(analysis_name = 'GO_MF_ORA',results = gores)
+    }
+    if(chosen_analyses$GO_BP){
+      meta$efficiency_parameters$seed %>% set.seed()
+      log_debug('start GO_BP-ORA: {fname}')
+      gores <- clusterProfiler::enrichGO(
+        gene = ORA_id_entrezid,
+        universe = entrezid,
+        OrgDb = meta$DB,
+        ont = "BP",
+        minGSSize = 50,
+        maxGSSize = 500,
+        pvalueCutoff = 1,
+        qvalueCutoff = 1,
+        pAdjustMethod = "BH",
+
+        readable = TRUE
+      )
+      gores <- DOSE::setReadable(gores, meta$DB, keyType =meta$data_parameters$GO_ORA_id)
+      analyses_results[['GO_BP_ORA']] <- list(analysis_name = 'GO_BP_ORA',results = gores)
     }
     # 8.2 KEGG
     # perform kegg with "cmt" database
@@ -193,8 +269,8 @@ data_functional_analyses <- function(meta) {
     for(idx in 1:length(meta$group_list)){
         log_debug("{meta$group_list[idx]}")
         dun <- list()
-      if(chosen_analyses$Normal$Ctrl){
-        dun <- c(dun,GSEA_analyses(meta,resLFC_all[[idx]], meta$group_list[idx],chosen_analyses=chosen_analyses$Normal))
+      if(chosen_analyses$GSEA$Ctrl){
+        dun <- c(dun,GSEA_analyses(meta,resLFC_all[[idx]], meta$group_list[idx],chosen_analyses=chosen_analyses$GSEA))
       }
       if(chosen_analyses$ORA$Ctrl){
         dun <- c(dun,ORA_analyses(meta,resLFC_all[[idx]], meta$group_list[idx],chosen_analyses=chosen_analyses$ORA))
