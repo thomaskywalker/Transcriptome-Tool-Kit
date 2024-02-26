@@ -1,24 +1,9 @@
 library(shiny)
 library(shinyWidgets)
 
-library(shiny)
-library(shinyWidgets)
-
-library(shiny)
-library(shinyWidgets)
-
 ui <- fluidPage(
   titlePanel("YAML Configuration for DESeq2 Analysis"),
-  sidebarLayout(
-    sidebarPanel(
-      # 创建一个名为"runButton"的运行按钮
-      actionButton("runButton", "Start analyses")
-    ),
-    mainPanel(
-      # 显示文本输出
-      textOutput("Start analyses")
-    )
-  )
+
   tabsetPanel(
     # Data Parameters Main Tab
     tabPanel("Data Parameters",
